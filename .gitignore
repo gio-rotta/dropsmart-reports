@@ -1,0 +1,5 @@
+node_modules
+dist
+.DS_Store
+v8-compile-cache-0
+.env
