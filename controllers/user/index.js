@@ -28,12 +28,11 @@ module.exports = (router) => {
       
       if (report && report.include_withdraw) {
         await mercadopago.updateReportConfig();
-        await mercadopago.autoGenerateReport();
       } else {
         await mercadopago.setReportConfig(); 
-        await mercadopago.autoGenerateReport();
       }
-
+      
+      await mercadopago.autoGenerateReport();
       await mercadopago.generateReport();
 
       const userToken = await new UserLib({name, email, shop, phone, mercadoPagoAccessToken, accountId}).storeUser();
