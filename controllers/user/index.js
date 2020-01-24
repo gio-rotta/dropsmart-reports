@@ -2,8 +2,11 @@
 'use strict'
 
 const jwt = require('jsonwebtoken');
+const mpModel = require('../../lib/MercadoPagoReport');
+const fbAdsModel = require('../../lib/FacebookAdsReport');
 
 const MercadoPagoLib = require('../../lib/MercadoPago');
+const FacebookAdsLib = require('../../lib/FacebookAds');
 const UserLib = require('../../lib/ReportUser');
 const config = require('config').server.jwt;
 
@@ -64,8 +67,28 @@ module.exports = (router) => {
         ctx.status = 401;
         ctx.throw(401, 'Invalid request');
       } else {
-        ctx.status = 200;
-        ctx.throw(200, 'Token is valid');
+        var d = new Date();     
+        var date = d.getUTCDate();
+        var month = d.getUTCMonth() + 1; // Since getUTCMonth() returns month from 0-11 not 1-12
+        var year = d.getUTCFullYear();
+        var formatData = date + "/" + month + "/" + year;
+
+        //Mercado Pago
+        const mercadopago = new MercadoPagoLib(user.mercadoPagoAccessToken, user.shop);
+        const fileName = await mercadopago.getLastReportName();
+        const mpReport = await mercadopago.getReport(fileName);
+        const mercadoPago = await new mpModel({date: formatData , shop, report: mpReport}).storeReport();
+
+        //FaceInsights
+        const faceInsight = new FacebookAdsLib(user.faceAdsAccessToken, user.accountId);
+        const fbReport = await faceInsight.getReport();
+        const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
+        const facebookAds = await new fbAdsModel({date: formatData , shop, report: fbReport}).storeReport();
+
+        ctx.body = {
+          facebookAds: fbReport,
+          mercadoPago: mpReport
+        }
       }
     } catch (err) {
       ctx.throw(500, err);
