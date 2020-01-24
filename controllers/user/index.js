@@ -23,9 +23,10 @@ module.exports = (router) => {
       
       const report = await mercadopago.getReportConfig();
       
-      if (report.include_withdraw) {
-        await mercadopago.setReportConfig();
+      if (report && report.include_withdraw) {
         await mercadopago.updateReportConfig();
+      } else {
+        await mercadopago.setReportConfig(); 
         await mercadopago.autoGenerateReport();
       }
 
