@@ -2,6 +2,8 @@
 'use strict'
 
 const jwt = require('jsonwebtoken');
+
+const MercadoPagoLib = require('../../lib/MercadoPago');
 const UserLib = require('../../lib/ReportUser');
 const config = require('config').server.jwt;
 
@@ -16,6 +18,18 @@ module.exports = (router) => {
         ctx.throw(500, 'Missing parameters');
         return;
       }
+
+      const mercadopago = new MercadoPagoLib(mercadoPagoAccessToken, shop);
+      
+      const report = await mercadopago.getReportConfig();
+      
+      if (report.include_withdraw) {
+        await mercadopago.setReportConfig();
+        await mercadopago.updateReportConfig();
+        await mercadopago.autoGenerateReport();
+      }
+
+      await mercadopago.generateReport();
 
       const userToken = await new UserLib({name, email, shop, phone, mercadoPagoAccessToken, accountId}).storeUser();
       ctx.session.userToken = userToken;
