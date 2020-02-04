@@ -2,8 +2,6 @@
 'use strict'
 
 const jwt = require('jsonwebtoken');
-const mpModel = require('../../lib/MercadoPagoReport');
-const fbAdsModel = require('../../lib/FacebookAdsReport');
 
 const mpModel = require('../../lib/MercadoPagoReport');
 const fbAdsModel = require('../../lib/FacebookAdsReport');
@@ -18,9 +16,9 @@ const BASE_URL = '/api/reportuser';
 module.exports = (router) => {
   router.get(`${BASE_URL}/signup`, async (ctx) => {
     try {
-      const { name, email, shop, phone, mercadoPagoAccessToken, accountId } = ctx.request.query;
+      const { name, email, shop, phone, mercadoPagoAccessToken, accountId, adAccountId } = ctx.request.query;
 
-      if (!name || !email || !shop || !phone || !mercadoPagoAccessToken || !accountId) {
+      if (!name || !email || !shop || !phone || !mercadoPagoAccessToken || !accountId || !adAccountId) {
         ctx.throw(500, 'Missing parameters');
         return;
       }
@@ -38,7 +36,7 @@ module.exports = (router) => {
       await mercadopago.autoGenerateReport();
       await mercadopago.generateReport();
 
-      const userToken = await new UserLib({name, email, shop, phone, mercadoPagoAccessToken, accountId}).storeUser();
+      const userToken = await new UserLib({name, email, shop, phone, mercadoPagoAccessToken, adAccountId, accountId}).storeUser();
       ctx.session.userToken = userToken;
       ctx.redirect('/api/facebook/login') // redirect to another page
       ctx.body = {
@@ -63,6 +61,9 @@ module.exports = (router) => {
 
       const { shop } = decoded;
 
+      const created_from = req.query.created_from || false;
+      const created_to = req.query.created_to || false;
+
       // check if a user exists
       const user = await new UserLib().getUserByShop(shop);
 
@@ -85,7 +86,7 @@ module.exports = (router) => {
 
         //FaceInsights
         const faceInsight = new FacebookAdsLib(user.faceAdsAccessToken, user.accountId);
-        const fbReport = await faceInsight.getReport();
+        const fbReport = await faceInsight.getReport(created_from, created_to );
         const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
         const facebookAds = await new fbAdsModel({date: formatData , shop, report: fbReport}).storeReport();
 

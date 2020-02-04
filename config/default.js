@@ -21,7 +21,7 @@ module.exports = {
       callbackUrl: process.env.CALLBACKURL,
     },
     jwt: {
-      secret: '3zzu014MD8ePQ6gvEtJ1hUU2usc0GAt186vKziuEQuRbRmkZUp0KSFeuvNee',
+      secret: '9999u014MD8ePQ6gvEtJ1hUU2usc0GAt186vKziuEQuRbRmkZUp0KSFeuvNe3',
       expiresIn: '9999 days',
     },
     bcrypt: {

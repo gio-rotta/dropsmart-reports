@@ -11,7 +11,8 @@ const ReportUserSchema = new Schema({
   dropsmartId: String,
   mercadoPagoAccessToken: String,
   faceAdsAccessToken: String,
-  accountId: String
+  accountId: String,
+  adAccountId: String
 });
 
 module.exports = mongoose.model('reportUser', ReportUserSchema);

@@ -34,6 +34,7 @@ module.exports = async function validate(ctx, next) {
       ctx.request.body.mercadoPagoAccessToken = user.mercadoPagoAccessToken;
       ctx.request.body.faceAdsAccessToken = user.faceAdsAccessToken;
       ctx.request.body.accountId = user.accountId;
+      ctx.request.body.adAccountId = user.adAccountId;
     }
     return next();
   }
