@@ -61,8 +61,8 @@ module.exports = (router) => {
 
       const { shop } = decoded;
 
-      const created_from = req.query.created_from || false;
-      const created_to = req.query.created_to || false;
+      const created_from = ctx.request.query.created_from || false;
+      const created_to = ctx.request.query.created_to || false;
 
       // check if a user exists
       const user = await new UserLib().getUserByShop(shop);
