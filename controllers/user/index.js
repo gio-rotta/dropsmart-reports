@@ -99,6 +99,45 @@ module.exports = (router) => {
       ctx.throw(500, err);
     }
   });
+
+  router.get(`${BASE_URL}/generateReport`, async (ctx) => {
+    try {
+
+      const { token } = ctx.request.query;
+      let decoded;
+      try {
+        decoded = jwt.verify(token, config.secret);
+      } catch(err) {
+        ctx.status = 401;
+        ctx.throw(401, 'Invalid request');
+      }
+
+      const { shop } = decoded;
+
+      const created_from = ctx.request.query.created_from || false;
+      const created_to = ctx.request.query.created_to || false;
+
+      // check if a user exists
+      const user = await new UserLib().getUserByShop(shop);
+
+      if (!user) {
+        ctx.status = 401;
+        ctx.throw(401, 'Invalid request');
+      } else {
+        
+        //Mercado Pago
+        const shop = ctx.request.body.shop;
+        const mercadopago = new MercadoPagoLib(user.mercadoPagoAccessToken, user.shop);
+        await mercadopago.generateReport(created_to, created_from);
+
+        ctx.body = {
+          success: true
+        }
+      }
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  });
 };
 
 //http://localhost:8000/api/reportuser/signup?name=dropsmart&email=gerenciamento@dropsmart.com.br&shop=dropsmart-oficial.myshopify.com&phone=4899817803&mercadoPagoAccessToken=TEST-5086945385345978-071913-131ff992b357d63b93dc032e4c74a5ab-433196903
