@@ -21,7 +21,6 @@ module.exports = async function validate(ctx, next) {
   // decode the token using a secret key-phrase
   const decoded = jwt.verify(token, config.secret);
   const { shop } = decoded;
-
   // check if a user exists
   const user = await new UserLib().getUserByShop(shop);
 

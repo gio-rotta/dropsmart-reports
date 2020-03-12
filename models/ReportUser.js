@@ -11,6 +11,7 @@ const ReportUserSchema = new Schema({
   dropsmartId: String,
   mercadoPagoAccessToken: String,
   faceAdsAccessToken: String,
+  token: String,
   accountId: String,
   adAccountId: String
 });

@@ -16,8 +16,9 @@ module.exports = (router) => {
 
   router.post(`${BASE_URL}`, auth, async (ctx) => {
     try {
-      const faceInsight = new FacebookAdsLib(ctx.request.body.faceAdsAccessToken, ctx.request.body.accountId);
+      const faceInsight = new FacebookAdsLib(ctx.request.body.faceAdsAccessToken, ctx.request.body.accountId, ctx.request.body.adAccountId);
       const report = await faceInsight.getReport();
+      
       const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
       ctx.body = {
         success: true,

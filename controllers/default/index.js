@@ -34,13 +34,13 @@ module.exports = (router) => {
       const mercadopago = new MercadoPagoLib(ctx.request.body.mercadoPagoAccessToken, ctx.request.body.shop);
       const fileName = await mercadopago.getLastReportName();
       const mpReport = await mercadopago.getReport(fileName);
-      const mercadoPago = await new mpModel({date: formatData , shop, report: mpReport}).storeReport();
+      //const mercadoPago = await new mpModel({date: formatData , shop, report: mpReport}).storeReport();
 
       //FaceInsights
-      const faceInsight = new FacebookAdsLib(ctx.request.body.faceAdsAccessToken, ctx.request.body.accountId);
+      const faceInsight = new FacebookAdsLib(ctx.request.body.faceAdsAccessToken, ctx.request.body.accountId, ctx.request.body.adAccountId);
       const fbReport = await faceInsight.getReport();
       const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
-      const facebookAds = await new fbAdsModel({date: formatData , shop, report: fbReport}).storeReport();
+      //const facebookAds = await new fbAdsModel({date: formatData , shop, report: fbReport}).storeReport();
 
       ctx.body = {
         facebookAds: fbReport,
