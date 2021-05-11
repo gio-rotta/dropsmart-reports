@@ -26,7 +26,7 @@
     "koa-router": "^7.2.1",
     "koa-session2": "^2.2.10",
     "kue": "^0.11.6",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "mercadopago": "^1.2.0",
     "mongoose": "^5.7.13",
     "passport": "^0.4.1",
